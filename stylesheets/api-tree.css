@@ -1,0 +1,30 @@
+/* Static `tree`-style interface overview: one <pre> block of plain text with
+   box-drawing lines and inline links. Interfaces are bold; methods and their
+   return types are muted. No collapsing. */
+
+pre.api-tree {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  /* Read as plain text, not a code block. */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Interfaces stand out. */
+.api-tree a.iface {
+  font-weight: 700;
+}
+
+/* Methods and return types recede. */
+.api-tree a.method,
+.api-tree .ret {
+  color: var(--md-default-fg-color--light);
+}
+
+.api-tree .ret a {
+  color: inherit;
+  text-decoration: underline;
+}
