@@ -2,778 +2,786 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/SUMMARY/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/gen_ref_pages/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/getting-started/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/llmstxt_preprocess/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/concepts/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/concepts/placeholder/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/creating-a-client/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/creating-a-client/client_from_credentials/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/creating-a-client/client_from_env/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/creating-a-client/client_from_refresh_token/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/creating-a-client/client_with_bearer_auth/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/examples/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/examples/asset_framework_navigation/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
+    </url>
+    <url>
+         <loc>https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/</loc>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/examples/getting_tag_data/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/examples/indexing_tags/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
+    </url>
+    <url>
+         <loc>https://trendminercs.github.io/trendminer-interface/examples/managing_work_items/</loc>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/examples/value_based_search/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/interval-utilities/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/interval-utilities/DataFrameIntervalUtilitiesAccessor/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/objects-and-types/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interface-tree/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/appliance/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/asset_framework.asset/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/asset_framework.attribute/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/asset_framework/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.field/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.approval/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.components/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.context_types/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.created_by/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.creation_date/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.description/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.duration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.enumeration_field/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.interval/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.keyword/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.numeric_field/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.period/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.state/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter.string_field/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.item/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.type/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.view/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.workflow/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.context/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.external/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.gauge/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.monitor/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.notebook/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.text/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.trend/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/dashboard.value/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/datasource/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/filter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/fingerprint.layer/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/fingerprint/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/monitor/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/notebook/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/notebook.pipeline/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/search.area/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/search.digital_step/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/search/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/search.similarity/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/search.value/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag.index_details/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag_builder.aggregation/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag_builder.custom_calculation/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag_builder.formula/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag_builder.imported/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag_builder.machine_learning_model/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag_builder/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag_builder.prediction/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/trend.group/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/trend.layer/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/trend/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/trend.view/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/user.group/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/user/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/work.favorites/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/work.folder/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/work/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/work.my_work/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/interfaces/work.shared/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/TrendMinerClient/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/aliases/SavedItem/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/containers/PagedDataFrame/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/containers/PagedDict/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/containers/PagedList/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/AggregationDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/AreaSearchDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/ContextHubViewDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/CustomCalculationDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/DashboardDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/DigitalStepSearchDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/FilterDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/FingerprintDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/FormulaDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/MachineLearningModelDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/NotebookDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/PipelineDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/PredictionDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/SimilaritySearchDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/TrendHubViewDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/definitions/ValueBasedSearchDefinition/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/APIError/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/AmbiguousResource/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/AuthenticationError/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/ConflictError/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/PermissionDeniedError/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/ResourceNotFound/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/ServerError/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/TrendMinerError/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/ValidationError/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/exceptions/VersionMismatchWarning/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Aggregation/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/AreaSearch/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Asset/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/AssetAccessRule/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/AssetFramework/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Attribute/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextApprovalFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextComponentFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextCreatedByFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextCreationDateFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextDescriptionFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextDurationFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextEnumerationFieldFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextField/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextHubView/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextHubViewTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextHubViewTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextIntervalFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextItemMonitorNotification/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextKeywordFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextNumericFieldFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextPeriodFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextPropertyFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextStateFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextStringFieldFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextType/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextTypeFilter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextWorkflow/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/CurrentValueTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/CurrentValueTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/CustomCalculation/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Dashboard/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/DashboardConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Datasource/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/DigitalStepSearch/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/DraftContextHubViewTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/DraftCurrentValueTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/DraftGaugeTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/DraftMonitorTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/DraftTrendHubViewTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/EmailMonitorNotification/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ExternalContentTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ExternalContentTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Filter/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Fingerprint/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Folder/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Formula/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/GaugeTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/GaugeTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/IndexDetails/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/MachineLearningModel/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Monitor/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/MonitorTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/MonitorTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Notebook/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/NotebookTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/NotebookTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Pipeline/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Prediction/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/SimilaritySearch/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/Tag/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TagImport/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TextTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TextTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TrendHubEntryGroup/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TrendHubLayer/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TrendHubView/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TrendHubViewTile/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/TrendHubViewTileConfiguration/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/User/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/UserGroup/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/ValueBasedSearch/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/reference/types/objects/WebhookMonitorNotification/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/use-cases/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/use-cases/asset-health-overview/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
     <url>
          <loc>https://trendminercs.github.io/trendminer-interface/use-cases/placeholder/</loc>
-         <lastmod>2026-09-15</lastmod>
+         <lastmod>2026-09-16</lastmod>
     </url>
 </urlset>

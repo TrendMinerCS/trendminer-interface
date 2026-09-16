@@ -11,7 +11,11 @@ New here? Start with **[Getting started](https://trendminercs.github.io/trendmin
 
 ## For LLMs
 
-Machine-readable documentation following the [llms.txt](https://llmstxt.org/) convention:
+Using an AI assistant with this SDK? Point it directly at this project's **`llms.txt`** — a machine-readable index of the whole documentation, following the [llms.txt](https://llmstxt.org/) convention. Copy this URL into your assistant:
 
-- [`llms.txt`](https://trendminercs.github.io/trendminer-interface/llms.txt) — a concise, linked index of this documentation.
-- [`llms-full.txt`](https://trendminercs.github.io/trendminer-interface/llms-full.txt) — the full guides and API reference concatenated into a single file.
+```
+https://trendminercs.github.io/trendminer-interface/llms.txt
+```
+
+- [`llms.txt`](https://trendminercs.github.io/trendminer-interface/llms.txt) — concise, linked index; the recommended entry point (works with any context window).
+- [`llms-full.txt`](https://trendminercs.github.io/trendminer-interface/llms-full.txt) — the full guides and API reference in a single file (large; best for large-context tools).
