@@ -22,7 +22,9 @@ Python control package (SDK) for the TrendMiner API. Everything branches from an
 - [Getting tag data](https://trendminercs.github.io/trendminer-interface/examples/getting_tag_data/index.md)
 - [Indexing tags](https://trendminercs.github.io/trendminer-interface/examples/indexing_tags/index.md)
 - [Value-based search](https://trendminercs.github.io/trendminer-interface/examples/value_based_search/index.md)
+- [Asset Framework Navigation](https://trendminercs.github.io/trendminer-interface/examples/asset_framework_navigation/index.md)
 - [Managing Work Items](https://trendminercs.github.io/trendminer-interface/examples/managing_work_items/index.md)
+- [Cross-Asset Rollout](https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/index.md)
 
 ## API — client & interfaces
 

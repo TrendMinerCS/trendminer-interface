@@ -49,7 +49,7 @@ load_dotenv(find_dotenv(".env.docs", usecwd=True)) client = client_from_credenti
 
 To get an item from a specific location in our work organizer, we first retrieve the folder the item is in:
 
-In \[ \]:
+In \[3\]:
 
 Copied!
 
@@ -408,7 +408,7 @@ However, it is good to have the option to skip the update of existing items for 
 
 In the example below, we check whether a value-based search with a given name exists specifically in our project folder, and update it if it does.
 
-In \[ \]:
+In \[20\]:
 
 Copied!
 

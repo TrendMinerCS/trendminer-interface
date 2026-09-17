@@ -550,6 +550,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -690,6 +694,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../examples/asset_framework_navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Framework Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../examples/managing_work_items/" class="md-nav__link">
         
   
@@ -698,6 +730,34 @@
     
   
     Managing Work Items
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/cross_asset_rollout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-Asset Rollout
   
 
     
@@ -6868,6 +6928,7 @@
     <div class="doc doc-contents ">
 
         <p>Create a new text tile</p>
+<p>The text tile content will be rendered as HTML.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -6906,7 +6967,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The content to display in the text tile</p>
+                <p>The HTML content to display in the text tile</p>
               </div>
             </td>
             <td>
@@ -6980,6 +7041,23 @@
           </tr>
       </tbody>
     </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">content</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;&lt;h2 style=&quot;border: 1px solid #E8663C; &#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;border-radius: 6px; &#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;padding: 8px 12px; &#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;width: fit-content; &#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;margin: 0 auto;&quot;&gt;&#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;&lt;a href=&quot;https://community.trendminer.com/&quot; &#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;target=&quot;_blank&quot; &#39;</span>
+<span class="gp">... </span>    <span class="s1">&#39;style=&quot;color: #E8663C; text-decoration: none;&quot;&gt;&#39;</span>
+<span class="gp">... </span>    <span class="s2">&quot;TM Community&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;&lt;/a&gt;&lt;/h2&gt;&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tile</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">dashboard</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
+</code></pre></div>
 
 
     </div>
