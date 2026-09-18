@@ -39,7 +39,7 @@ Raises:
 ```
 search(
     name: str | None = None,
-    statuses: list[IndexStatus] | None = None,
+    statuses: list[TagIndexStatus] | None = None,
     datasources: list[Datasource] | None = None,
     delayed: bool | None = None,
     freq: Timedelta
@@ -57,7 +57,7 @@ Parameters:
 | Name          | Type                                       | Description                                                                                                                                                                                                         | Default |
 | ------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `name`        | `str`                                      | Tag name search query                                                                                                                                                                                               | `None`  |
-| `statuses`    | `List[str]`                                | Options: "ok", "in progress", "out of date", "stale", "incomplete", "dormant"                                                                                                                                       | `None`  |
+| `statuses`    | `list of TagIndexStatus`                   | Filter on specific index statuses. See TagIndexStatus for the allowed values.                                                                                                                                       | `None`  |
 | `datasources` | `List[Datasource]`                         | Filter on specific datasources                                                                                                                                                                                      | `None`  |
 | `delayed`     | `bool`                                     | Filter on only delayed or non-delayed indexes. A tag is considered delayed if its last index update is longer ago than 4 times the configured index update frequency.                                               | `None`  |
 | `freq`        | `Timedelta or tuple[Timedelta, Timedelta]` | The configured index update frequency: - 2m as the monitor policy - 1h as a default policy - 24h for reduced policy When a tuple is given, the first value is considered the minimum, the second value the maximum. | `None`  |

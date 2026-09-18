@@ -13,7 +13,7 @@ The tag for which these index details apply.
 ### status
 
 ```
-status: IndexStatus
+status: TagIndexStatus
 ```
 
 The current status of the index.

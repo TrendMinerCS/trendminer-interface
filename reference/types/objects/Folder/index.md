@@ -154,7 +154,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -162,15 +162,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 

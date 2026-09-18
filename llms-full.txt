@@ -10,6 +10,14 @@ Python control package (SDK) for the TrendMiner API. Everything branches from an
 
 Python control package for the TrendMiner API.
 
+## Installation
+
+Install the latest release ([`v1.6.0a1`](https://github.com/TrendMinerCS/trendminer-interface/releases/tag/v1.6.0a1)) directly from its wheel:
+
+```
+pip install https://github.com/TrendMinerCS/trendminer-interface/releases/download/v1.6.0a1/trendminer_interface-1.6.0.a1-py3-none-any.whl
+```
+
 New here? Start with **[Getting started](https://trendminercs.github.io/trendminer-interface/getting-started/index.md)**.
 
 ## Reference
@@ -1995,6 +2003,357 @@ vbs
 
 update_existing = True vbs_name = "MySearch" vbs_def = client.search.value.define( queries=[(hour_tag, ">", 12)], ) try: vbs = folder.get_item(name=vbs_name, content_type=ValueBasedSearch) if update_existing: vbs.definition = vbs_def vbs = vbs.update() except ResourceNotFound: vbs = client.search.value.create( name=vbs_name, folder=folder, definition=vbs_def, ) vbs
 
+# Context items[¶](#context-items)
+
+*Context items* are the annotations that live in TrendMiner's ContextHub: each one marks a period of time on a specific [`Tag`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Tag/index.md), [`Asset`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Asset/index.md) or [`Attribute`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Attribute/index.md), carries a [`ContextType`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextType/index.md), and can hold a description, keywords and typed fields.
+
+The SDK represents a set of context items as **events** — a [`pandas.DataFrame`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html) whose [`IntervalIndex`](https://pandas.pydata.org/docs/reference/api/pandas.IntervalIndex.html) holds each item's start and end, alongside columns for its type, component and other metadata (see [Interval utilities](https://trendminercs.github.io/trendminer-interface/interval-utilities/index.md) for this shared *events* vocabulary). Every operation in this notebook is really just building or reshaping such a DataFrame and handing it to the [`client.context`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/context/index.md) facade.
+
+This example shows how to create, retrieve, update and delete context items, and then how to populate them at scale — from a [value-based search](https://trendminercs.github.io/trendminer-interface/examples/value_based_search/index.md), from a monitor, and from a scheduled update service.
+
+## Setup[¶](#setup)
+
+We start by [authenticating a client](https://trendminercs.github.io/trendminer-interface/creating-a-client/index.md).
+
+In \[1\]:
+
+Copied!
+
+```
+import os
+
+import pandas as pd
+from dotenv import find_dotenv, load_dotenv
+
+from trendminer_interface import client_from_credentials
+
+# Credentials and server details are securely stored in .env.docs for our example code.
+# find_dotenv walks up from the working directory to locate it, so this works
+# regardless of the directory the notebook is run from.
+load_dotenv(find_dotenv(".env.docs", usecwd=True))
+
+client = client_from_credentials(
+    url=os.environ["TM_URL"],
+    client_id=os.environ["TM_CLIENT_ID"],
+    client_secret=os.environ["TM_CLIENT_SECRET"],
+)
+```
+
+import os import pandas as pd from dotenv import find_dotenv, load_dotenv from trendminer_interface import client_from_credentials
+
+# Credentials and server details are securely stored in .env.docs for our example code.
+
+# find_dotenv walks up from the working directory to locate it, so this works
+
+# regardless of the directory the notebook is run from.
+
+load_dotenv(find_dotenv(".env.docs", usecwd=True)) client = client_from_credentials( url=os.environ["TM_URL"], client_id=os.environ["TM_CLIENT_ID"], client_secret=os.environ["TM_CLIENT_SECRET"], )
+
+## Creating context items[¶](#creating-context-items)
+
+Creating context items comes down to assembling a DataFrame with the right structure and passing it to [`client.context.item.create`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.item/index.md). We build that DataFrame up one column at a time.
+
+The index must be an [`IntervalIndex`](https://pandas.pydata.org/docs/reference/api/pandas.IntervalIndex.html) of timezone-aware timestamps — each interval becomes one context item's start and end. Here we use [`pandas.interval_range`](https://pandas.pydata.org/docs/reference/api/pandas.interval_range.html) to make one month-long item for each of the last six months, anchored to the client's timezone (`client.tz`).
+
+In \[2\]:
+
+Copied!
+
+```
+# 1 item per month for the last 6 months
+df = pd.DataFrame(
+    index=pd.interval_range(
+        end=pd.Timestamp.now(tz=client.tz).normalize(), 
+        freq="MS", 
+        periods=6,
+    ),
+)
+```
+
+# 1 item per month for the last 6 months
+
+df = pd.DataFrame( index=pd.interval_range( end=pd.Timestamp.now(tz=client.tz).normalize(), freq="MS", periods=6, ), )
+
+The `type` column holds each item's [`ContextType`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextType/index.md), which we look up by name through the [`client.context.type`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.type/index.md) interface. We assign a single type to every row here, but the column may mix types freely.
+
+In \[3\]:
+
+Copied!
+
+```
+context_type = client.context.type.from_name("Month Example")
+df["type"] = context_type
+```
+
+context_type = client.context.type.from_name("Month Example") df["type"] = context_type
+
+Every item is anchored to a *component* — a [`Tag`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Tag/index.md), [`Asset`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Asset/index.md) or [`Attribute`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Attribute/index.md) — supplied in the `component` column. We look our tag up by name with [`client.tag.from_name`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/tag/index.md); see [Asset Framework navigation](https://trendminercs.github.io/trendminer-interface/examples/asset_framework_navigation/index.md) for retrieving assets and attributes instead.
+
+In \[4\]:
+
+Copied!
+
+```
+month_tag = client.tag.from_name("TM_Month_UTC")
+df["component"] = month_tag
+```
+
+month_tag = client.tag.from_name("TM_Month_UTC") df["component"] = month_tag
+
+Two further columns are recognised as first-class item metadata: `description` (a string) and `keywords` (a list of strings per row). Both are optional.
+
+In \[5\]:
+
+Copied!
+
+```
+description = "Monthly overview"
+df["description"] = description
+
+keywords = ["sdk"]
+df["keywords"] = [keywords] * len(df)
+```
+
+description = "Monthly overview" df["description"] = description keywords = ["sdk"] df["keywords"] = [keywords] * len(df)
+
+Any remaining columns are stored as **fields** on the item. When a column name matches the [`key`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextField/index.md) of one of the type's [`fields`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextType/index.md) (`ContextType.fields`), its value is shown and formatted in that field in TrendMiner; a column that matches no field key appears instead as an *Other Property*.
+
+In \[6\]:
+
+Copied!
+
+```
+df["month"] = df.index.left.month_name()
+```
+
+df["month"] = df.index.left.month_name()
+
+The completed DataFrame looks like this:
+
+In \[7\]:
+
+Copied!
+
+```
+df
+```
+
+df
+
+With the DataFrame complete, a single call creates every item on the server:
+
+In \[8\]:
+
+Copied!
+
+```
+client.context.item.create(items=df)
+```
+
+client.context.item.create(items=df)
+
+## Retrieving, updating and deleting context items[¶](#retrieving-updating-and-deleting-context-items)
+
+Items are retrieved by describing *which* items you want with a set of **filters**. Each filter is built from the [`client.context.filter`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.filter/index.md) interface; combined, they narrow the result down to the items created above. Filtering on [`created_by`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextCreatedByFilter/index.md) is the only way to fully control what comes back — other users may have created items that match the rest of your filters.
+
+The filters are bundled into a [`ContextHubViewDefinition`](https://trendminercs.github.io/trendminer-interface/reference/types/definitions/ContextHubViewDefinition/index.md) via [`client.context.view.define`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.view/index.md), whose `get_items` returns a lazy [`PagedDataFrame`](https://trendminercs.github.io/trendminer-interface/reference/types/containers/PagedDataFrame/index.md); calling `collect` materialises it into an events DataFrame. Notice that creating the items added a lot of metadata (keys, identifiers, timestamps), while the data we supplied came back intact.
+
+In \[9\]:
+
+Copied!
+
+```
+context_filters = [
+    client.context.filter.created_by.new(users=[client.user.self]),
+    client.context.filter.period.new(period=pd.Timedelta(days=200)),
+    client.context.filter.context_types.new(types=[context_type]),
+    client.context.filter.keyword.new(keywords=["sdk"]),
+    client.context.filter.components.new(queries=[(month_tag, "self")])
+]
+
+chv_def = client.context.view.define(
+    filters=context_filters,
+)
+
+df = chv_def.get_items().collect()
+df
+```
+
+context_filters = \[ client.context.filter.created_by.new(users=[client.user.self]), client.context.filter.period.new(period=pd.Timedelta(days=200)), client.context.filter.context_types.new(types=[context_type]), client.context.filter.keyword.new(keywords=["sdk"]), client.context.filter.components.new(queries=[(month_tag, "self")]) \] chv_def = client.context.view.define( filters=context_filters, ) df = chv_def.get_items().collect() df
+
+To update items, modify the DataFrame and pass it to [`client.context.item.update`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.item/index.md). Rows are matched to existing items through the `identifier` column that `get_items` returned, so keep that column intact.
+
+In \[10\]:
+
+Copied!
+
+```
+df["description"] = "Updated item"
+
+client.context.item.update(df)
+```
+
+df["description"] = "Updated item" client.context.item.update(df)
+
+The most efficient way to delete items is [`ContextHubViewDefinition.delete_items`](https://trendminercs.github.io/trendminer-interface/reference/types/definitions/ContextHubViewDefinition/index.md), which removes every item matching the definition's filters. This is powerful and easy to misuse: with loose filters you can delete far more than you intended. As a safeguard, always include at least a [`ContextCreatedByFilter`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextCreatedByFilter/index.md) scoped to specific users (usually yourself), so you never remove other users' items.
+
+In \[11\]:
+
+Copied!
+
+```
+chv_def.delete_items()
+```
+
+chv_def.delete_items()
+
+## Populating items from a search[¶](#populating-items-from-a-search)
+
+A common pattern is to run a [value-based search](https://trendminercs.github.io/trendminer-interface/examples/value_based_search/index.md) and turn each result into a context item — often writing the search's calculations straight into context fields. The call below reuses the search from that example and adds the `component` and `type` columns that make its result a valid input for [`create`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/context.item/index.md).
+
+Watch out for **open** results (rows where the `open` column is `True`): these create *open* context items that will never be closed, because there is no link back to the originating search. To avoid items that stay open indefinitely, either drop the open rows (creating no item for them) or clear/adjust the `open` column so a closed item is written up to the current time.
+
+In \[12\]:
+
+Copied!
+
+```
+now = pd.Timestamp.now(tz=client.tz)
+search_interval=pd.Interval(
+    now - pd.Timedelta(days=180),
+    now,
+)
+
+vbs_def = client.search.value.define(
+    queries=[(month_tag, "constant")],
+    calculations={
+        "month": (month_tag, "start", ""),
+    }
+)
+
+df = vbs_def.get_results(search_interval).collect()
+
+df = df[~df["open"]]  # drop open results
+
+df["component"] = month_tag
+df["type"] = context_type
+df["keywords"] = [keywords] * len(df)
+df["description"] = description
+
+df
+```
+
+now = pd.Timestamp.now(tz=client.tz) search_interval=pd.Interval( now - pd.Timedelta(days=180), now, ) vbs_def = client.search.value.define( queries=[(month_tag, "constant")], calculations={ "month": (month_tag, "start", ""), } ) df = vbs_def.get_results(search_interval).collect() df = df\[~df["open"]\] # drop open results df["component"] = month_tag df["type"] = context_type df["keywords"] = [keywords] * len(df) df["description"] = description df
+
+## Creating items automatically with a monitor[¶](#creating-items-automatically-with-a-monitor)
+
+Rather than writing historic items by hand, we can attach a **monitor** to a saved search so that every new result automatically becomes a context item. We persist the search with [`client.search.value.create`](https://trendminercs.github.io/trendminer-interface/reference/interfaces/search.value/index.md), take its monitor with `get_monitor`, and configure the monitor's [context settings](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextItemMonitorNotification/index.md) — the type, component, description and keywords each new item should get. The same technique is used as part of the [Cross-asset rollout](https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/index.md) example.
+
+In \[13\]:
+
+Copied!
+
+```
+vbs = client.search.value.create(
+    name="SDK Example - Months",
+    definition=vbs_def,
+)
+
+monitor = vbs.get_monitor()
+
+monitor.context.context_type = context_type
+monitor.context.component = month_tag
+monitor.context.description = description
+monitor.context.keywords = keywords
+monitor.context.enabled = True
+
+monitor.update()
+monitor.enable()
+```
+
+vbs = client.search.value.create( name="SDK Example - Months", definition=vbs_def, ) monitor = vbs.get_monitor() monitor.context.context_type = context_type monitor.context.component = month_tag monitor.context.description = description monitor.context.keywords = keywords monitor.context.enabled = True monitor.update() monitor.enable()
+
+## Backfilling without creating duplicates[¶](#backfilling-without-creating-duplicates)
+
+Typically we want a monitor for new events *and* a one-off backfill of the historic events that predate it. The catch: naively re-running the backfill creates duplicate items every time. Rather than relying on running it exactly once, the robust approach is to cross-reference the items that already exist and create only the ones that are missing — the same upsert idea used in [Managing work items](https://trendminercs.github.io/trendminer-interface/examples/managing_work_items/index.md).
+
+In \[14\]:
+
+Copied!
+
+```
+# `df` still holds the items initialised from the search above.
+
+# Retrieve every item that already exists (all pages).
+df_existing = chv_def.get_items().collect(max_pages=None)
+
+# Keep only the intervals that are not present yet, and create those.
+df_new = df[~df.index.isin(df_existing.index)]
+client.context.item.create(df_new)
+```
+
+# `df` still holds the items initialised from the search above.
+
+# Retrieve every item that already exists (all pages).
+
+df_existing = chv_def.get_items().collect(max_pages=None)
+
+# Keep only the intervals that are not present yet, and create those.
+
+df_new = df[~df.index.isin(df_existing.index)] client.context.item.create(df_new)
+
+## Keeping fields up to date with an update service[¶](#keeping-fields-up-to-date-with-an-update-service)
+
+Items created by a monitor cannot carry dynamic calculations. To enrich them with calculations that are only correct once the event has finished, run a small update script on a schedule.
+
+Two practical points make that script both safe and cheap:
+
+- Filter on the target field being **empty** (a [`ContextStringFieldFilter`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextStringFieldFilter/index.md) in `"empty"` mode) so you only touch items that have not been updated yet.
+- Filter on the item being **closed** (a [`ContextStateFilter`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextStateFilter/index.md)), since a still-open result gives premature calculation results — an integral or average would only cover the event up to *now*.
+
+It is also good practice to update the index of the tags your calculations need at the start of the script; see [Indexing tags](https://trendminercs.github.io/trendminer-interface/examples/indexing_tags/index.md).
+
+In \[15\]:
+
+Copied!
+
+```
+month_tag.index()
+
+context_field = client.context.field.from_name("month")
+
+field_filter = client.context.filter.string_field.new(
+    field=context_field, 
+    mode="empty",
+)
+
+state_filter = client.context.filter.state.new(
+    mode="closed",
+)
+
+# Keep the previous filters, add empty field filter
+context_filters_update = context_filters + [field_filter]
+
+chv_def_update = client.context.view.define(
+    filters=context_filters_update,
+)
+
+# Get items, update the `month` field
+df = chv_def_update.get_items().collect()
+df = month_tag.add_aggregation(events=df, method="start", name="month")
+client.context.item.update(df)
+```
+
+month_tag.index() context_field = client.context.field.from_name("month") field_filter = client.context.filter.string_field.new( field=context_field, mode="empty", ) state_filter = client.context.filter.state.new( mode="closed", )
+
+# Keep the previous filters, add empty field filter
+
+context_filters_update = context_filters + [field_filter] chv_def_update = client.context.view.define( filters=context_filters_update, )
+
+# Get items, update the `month` field
+
+df = chv_def_update.get_items().collect() df = month_tag.add_aggregation(events=df, method="start", name="month") client.context.item.update(df)
+
 # Cross-Asset Rollout[¶](#cross-asset-rollout)
 
 The SDK provides a way to do bulk creation of work items by iterating over a set of assets. In this example, we will programatically create aggregation tags, TrendHub views, searches, monitors, ContextHub vies and dashboards for Cleaning in Place (CIP) assets.
@@ -2209,7 +2568,7 @@ aggregation_tag.index()
 
 We will create the TrendHub views that we will later add to the dashboards. We fix attribute and tag colors and scales for a uniform look.
 
-In \[7\]:
+In \[8\]:
 
 Copied!
 
@@ -2245,23 +2604,32 @@ for asset in assets:
     # Temperature
     temperature = asset.get_child_attribute("Temperature")
 
-    # Single layer from start of September until current time
-    # We will set the same interval for the context bar
-    interval = pd.Interval(
-        pd.Timestamp("2026-09-01", tz=client.tz),
-        pd.Timestamp.now(tz=client.tz),
+    # Focus chart interval
+    # Since we will make a locked and live view, only the duration matters
+    now = pd.Timestamp.now(tz=client.tz)
+    chart_interval = pd.Interval(
+        now-pd.Timedelta(days=7),
+        now,
     )
     layer = client.trend.layer.new(
-        interval=interval,
+        interval=chart_interval,
         base=True,  # base layer
     )
 
+    # Context interval (last 30d)
+    context_interval = pd.Interval(
+        now-pd.Timedelta(days=30),
+        now,
+    )
+
     # View definition
+    chart_properties = client.trend.chart.stacked.new(locked=True)
     thv_def = client.trend.view.define(
         entries=[phase, flow_group, temperature],
         layers=[layer],
-        context_interval=interval,
+        context_interval=context_interval,
         live=True,
+        chart_properties=chart_properties,
     )
 
     # Create/update
@@ -2298,15 +2666,19 @@ smoothed_flow_tag = aggregation_tag_dict[asset] smoothed_flow_tag.color = "#050d
 
 temperature = asset.get_child_attribute("Temperature")
 
-# Single layer from start of September until current time
+# Focus chart interval
 
-# We will set the same interval for the context bar
+# Since we will make a locked and live view, only the duration matters
 
-interval = pd.Interval( pd.Timestamp("2026-09-01", tz=client.tz), pd.Timestamp.now(tz=client.tz), ) layer = client.trend.layer.new( interval=interval, base=True, # base layer )
+now = pd.Timestamp.now(tz=client.tz) chart_interval = pd.Interval( now-pd.Timedelta(days=7), now, ) layer = client.trend.layer.new( interval=chart_interval, base=True, # base layer )
+
+# Context interval (last 30d)
+
+context_interval = pd.Interval( now-pd.Timedelta(days=30), now, )
 
 # View definition
 
-thv_def = client.trend.view.define( entries=[phase, flow_group, temperature], layers=[layer], context_interval=interval, live=True, )
+chart_properties = client.trend.chart.stacked.new(locked=True) thv_def = client.trend.view.define( entries=[phase, flow_group, temperature], layers=[layer], context_interval=context_interval, live=True, chart_properties=chart_properties, )
 
 # Create/update
 
@@ -2318,7 +2690,7 @@ We create a value-based search per asset, indicating whether the asset is active
 
 We will set up the monitor to create context items, of which we need to configure the context type.
 
-In \[8\]:
+In \[9\]:
 
 Copied!
 
@@ -2329,7 +2701,7 @@ context_type
 
 context_type = client.context.type.from_name("Operational") context_type
 
-In \[9\]:
+In \[10\]:
 
 Copied!
 
@@ -2415,7 +2787,7 @@ monitor.update() monitor.enable()
 
 We can now create ContextHub views which capture the context items created from the monitors we just set up. The views created below get all context items of the specified type of the last 30d, attached to the specific CIP asset. Furthermore we filter to only retreive items we created ourselves. This is best practice to avoid other user's context items interfering with our views.
 
-In \[10\]:
+In \[11\]:
 
 Copied!
 
@@ -2472,16 +2844,6 @@ Copied!
 
 ```
 from trendminer_interface import Dashboard
-from urllib.parse import urljoin
-
-
-def db_url(db: Dashboard):
-    """Helper function to get dashboard url"""
-    return urljoin(
-        client.url,
-        f"dashhub/#/dashboard/{db.identifier}",
-)
-
 
 overview_db_name = "CIP Overview"
 
@@ -2516,7 +2878,7 @@ for i, asset in enumerate(assets):
     # Text tile - link back to overview
     overview_tile = client.dashboard.text.new(
         position=(0, 0, 4, 4),
-        content=f'<h2><a href="{db_url(overview_db)}">To Overview</a></h2>'
+        content=f'<h2><a href="{overview_db.url}">To Overview</a></h2>'
     )
     tiles.append(overview_tile)
 
@@ -2603,7 +2965,7 @@ for i, asset in enumerate(assets):
     # Overview text tile - link to unit dashboard
     unit_tile = client.dashboard.text.new(
         position=(0, overview_y_pos, 4, 4),
-        content=f'<h2><a href="{db_url(db)}">{asset.name}</a></h2>'
+        content=f'<h2><a href="{db.url}">{asset.name}</a></h2>'
     )
     overview_db.definition.tiles.append(unit_tile)
 
@@ -2622,7 +2984,7 @@ for i, asset in enumerate(assets):
 overview_db.update()
 ```
 
-from trendminer_interface import Dashboard from urllib.parse import urljoin def db_url(db: Dashboard): """Helper function to get dashboard url""" return urljoin( client.url, f"dashhub/#/dashboard/{db.identifier}", ) overview_db_name = "CIP Overview" overview_db_def = client.dashboard.define( tiles=[], live=True, ) try: overview_db = project_folder.get_item( name=overview_db_name, content_type=Dashboard, ) if update_existing: overview_db.definition = overview_db_def overview_db = overview_db.update() except ResourceNotFound: overview_db = client.dashboard.create( name=overview_db_name, folder=project_folder, definition=overview_db_def, ) for i, asset in enumerate(assets): asset_folder = folder_dict[asset]
+from trendminer_interface import Dashboard overview_db_name = "CIP Overview" overview_db_def = client.dashboard.define( tiles=[], live=True, ) try: overview_db = project_folder.get_item( name=overview_db_name, content_type=Dashboard, ) if update_existing: overview_db.definition = overview_db_def overview_db = overview_db.update() except ResourceNotFound: overview_db = client.dashboard.create( name=overview_db_name, folder=project_folder, definition=overview_db_def, ) for i, asset in enumerate(assets): asset_folder = folder_dict[asset]
 
 # UNIT DASHBOARD
 
@@ -2632,7 +2994,7 @@ tiles = []
 
 overview_tile = client.dashboard.text.new( position=(0, 0, 4, 4), content=f'
 
-## [To Overview](<https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Bdb_url(overview_db)%7D>)
+## [To Overview](https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Boverview_db.url%7D)
 
 ' ) tiles.append(overview_tile)
 
@@ -2666,7 +3028,7 @@ overview_y_pos = 4\*i
 
 unit_tile = client.dashboard.text.new( position=(0, overview_y_pos, 4, 4), content=f'
 
-## [{asset.name}](<https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Bdb_url(db)%7D>)
+## [{asset.name}](https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Bdb.url%7D)
 
 ' ) overview_db.definition.tiles.append(unit_tile)
 
@@ -3051,8 +3413,15 @@ TrendMinerClient
 │   │   └── search → PagedList[TrendHubView]
 │   ├── layer
 │   │   └── new → TrendHubLayer
-│   └── group
-│       └── new → TrendHubEntryGroup
+│   ├── group
+│   │   └── new → TrendHubEntryGroup
+│   └── chart
+│       ├── stacked
+│       │   └── new → StackedChartProperties
+│       ├── trend
+│       │   └── new → TrendChartProperties
+│       └── scatter
+│           └── new → ScatterChartProperties
 ├── user
 │   ├── self → User
 │   ├── from_identifier → User
@@ -4346,17 +4715,17 @@ Create a new context type
 
 Parameters:
 
-| Name                  | Type                 | Description                                                                                                                                                                                                                                                                                                            | Default         |
-| --------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `key`                 | `str`                | Unique key that is used as the identifier of the context type. Must be unique across all context types and cannot be changed after creation.                                                                                                                                                                           | *required*      |
-| `name`                | `str`                | Name that is visible to the users in the appliance                                                                                                                                                                                                                                                                     | *required*      |
-| `workflow`            | `ContextWorkflow`    | Workflow associated with the context type. When None, the context type can only have a single associated timestamp.                                                                                                                                                                                                    | *required*      |
-| `fields`              | `list[ContextField]` | List of fields that are associated with the context type.                                                                                                                                                                                                                                                              | *required*      |
-| `color`               | `str`                | Color of the context type in hex format (e.g. "#FF0000")                                                                                                                                                                                                                                                               | `"#4A75E2"`     |
-| `icon`                | `ContextTypeIcon`    | Icon of the context type. Possible values are: "alert-circle", "arrows-round", "bucket", "circle-success", "clipboard", "cracked", "file-check", "flame", "flask", "flow-line", "information", "person", "ruler", "snowflake", "spoon", "trending-down", "warning", "waterdrops", "waves", "wheelbarrow", or "wrench". | `"information"` |
-| `description`         | `str`                | Description of the context type                                                                                                                                                                                                                                                                                        | `None`          |
-| `approvals_enabled`   | `bool`               | Whether context items of this type can be approved.                                                                                                                                                                                                                                                                    | `False`         |
-| `audit_trail_enabled` | `bool`               | Whether context item edit history will be saved as metadata to the item.                                                                                                                                                                                                                                               | `False`         |
+| Name                  | Type                 | Description                                                                                                                                  | Default         |
+| --------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `key`                 | `str`                | Unique key that is used as the identifier of the context type. Must be unique across all context types and cannot be changed after creation. | *required*      |
+| `name`                | `str`                | Name that is visible to the users in the appliance                                                                                           | *required*      |
+| `workflow`            | `ContextWorkflow`    | Workflow associated with the context type. When None, the context type can only have a single associated timestamp.                          | *required*      |
+| `fields`              | `list[ContextField]` | List of fields that are associated with the context type.                                                                                    | *required*      |
+| `color`               | `str`                | Color of the context type in hex format (e.g. "#FF0000")                                                                                     | `"#4A75E2"`     |
+| `icon`                | `ContextTypeIcon`    | Icon of the context type. See ContextTypeIcon for the allowed values.                                                                        | `"information"` |
+| `description`         | `str`                | Description of the context type                                                                                                              | `None`          |
+| `approvals_enabled`   | `bool`               | Whether context items of this type can be approved.                                                                                          | `False`         |
+| `audit_trail_enabled` | `bool`               | Whether context item edit history will be saved as metadata to the item.                                                                     | `False`         |
 
 Returns:
 
@@ -6699,7 +7068,7 @@ Raises:
 ```
 search(
     name: str | None = None,
-    statuses: list[IndexStatus] | None = None,
+    statuses: list[TagIndexStatus] | None = None,
     datasources: list[Datasource] | None = None,
     delayed: bool | None = None,
     freq: Timedelta
@@ -6717,7 +7086,7 @@ Parameters:
 | Name          | Type                                       | Description                                                                                                                                                                                                         | Default |
 | ------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `name`        | `str`                                      | Tag name search query                                                                                                                                                                                               | `None`  |
-| `statuses`    | `List[str]`                                | Options: "ok", "in progress", "out of date", "stale", "incomplete", "dormant"                                                                                                                                       | `None`  |
+| `statuses`    | `list of TagIndexStatus`                   | Filter on specific index statuses. See TagIndexStatus for the allowed values.                                                                                                                                       | `None`  |
 | `datasources` | `List[Datasource]`                         | Filter on specific datasources                                                                                                                                                                                      | `None`  |
 | `delayed`     | `bool`                                     | Filter on only delayed or non-delayed indexes. A tag is considered delayed if its last index update is longer ago than 4 times the configured index update frequency.                                               | `None`  |
 | `freq`        | `Timedelta or tuple[Timedelta, Timedelta]` | The configured index update frequency: - 2m as the monitor policy - 1h as a default policy - 24h for reduced policy When a tuple is given, the first value is considered the minimum, the second value the maximum. | `None`  |
@@ -7600,6 +7969,132 @@ Returns:
 | ------- | -------------- | ------------------------------------------------- |
 | `items` | `PagedList[T]` | Paginated list of items matching the search query |
 
+# `client.trend.chart`
+
+## trendminer_interface.\_client.trend.chart.ChartPropertiesFacade
+
+Facade for creating new chart property instances
+
+### stacked
+
+```
+stacked: StackedChartPropertiesFacade
+```
+
+Facade for creating new stacked chart properties
+
+### trend
+
+```
+trend: TrendChartPropertiesFacade
+```
+
+Facade for creating new trend chart properties
+
+### scatter
+
+```
+scatter: ScatterChartPropertiesFacade
+```
+
+Facade for creating scatter chart properties
+
+# `client.trend.chart.scatter`
+
+## trendminer_interface.\_client.trend.chart.scatter.ScatterChartPropertiesFacade
+
+Facade for creating new scatter chart properties
+
+### new
+
+```
+new(
+    locked: bool = False,
+    label_type: ChartLabelType = "alias",
+    grid_lines: bool = False,
+) -> ScatterChartProperties
+```
+
+Create a new scatter chart properties instance
+
+Parameters:
+
+| Name         | Type             | Description                                             | Default   |
+| ------------ | ---------------- | ------------------------------------------------------- | --------- |
+| `locked`     | `bool`           | Whether to lock the focus chart duration                | `False`   |
+| `label_type` | `ChartLabelType` | Property by which to label the view tags and attributes | `"alias"` |
+| `grid_lines` | `bool`           | Whether to show grid lines                              | `False`   |
+
+Notes
+
+Other scatter plot chart properties such as colors, layer selection and reference lines are currently not configurable, and will be set to default.
+
+# `client.trend.chart.stacked`
+
+## trendminer_interface.\_client.trend.chart.stacked.StackedChartPropertiesFacade
+
+Facade for creating new stacked chart properties
+
+### new
+
+```
+new(
+    locked: bool = False,
+    label_type: ChartLabelType = "alias",
+    grid_lines: bool = False,
+    filling: bool = False,
+    context: bool = True,
+    collapsed_filters: bool = False,
+    single_line_labels: bool = True,
+) -> StackedChartProperties
+```
+
+Create a new stacked chart properties instance
+
+Parameters:
+
+| Name                 | Type             | Description                                                      | Default   |
+| -------------------- | ---------------- | ---------------------------------------------------------------- | --------- |
+| `locked`             | `bool`           | Whether to lock the focus chart duration                         | `False`   |
+| `label_type`         | `ChartLabelType` | Property by which to label the view tags and attributes          | `"alias"` |
+| `grid_lines`         | `bool`           | Whether to show grid lines                                       | `False`   |
+| `context`            | `bool`           | Whether to display context items                                 | `True`    |
+| `filling`            | `bool`           | Whether to fill the area below the trend                         | `False`   |
+| `collapsed_filters`  | `bool`           | Whether to collapse rather than mark filtered-out intervals      | `False`   |
+| `single_line_labels` | `bool`           | Whether to display all tag and attribute labels on a single line | `True`    |
+
+# `client.trend.chart.trend`
+
+## trendminer_interface.\_client.trend.chart.trend.TrendChartPropertiesFacade
+
+Facade for creating new trend chart properties
+
+### new
+
+```
+new(
+    locked: bool = False,
+    label_type: ChartLabelType = "alias",
+    grid_lines: bool = False,
+    filling: bool = False,
+    context: bool = True,
+    collapsed_filters: bool = False,
+) -> TrendChartProperties
+```
+
+Create a new trend chart properties instance
+
+Parameters:
+
+| Name                | Type             | Description                                                 | Default   |
+| ------------------- | ---------------- | ----------------------------------------------------------- | --------- |
+| `locked`            | `bool`           | Whether to lock the focus chart duration                    | `False`   |
+| `label_type`        | `ChartLabelType` | Property by which to label the view tags and attributes     | `"alias"` |
+| `grid_lines`        | `bool`           | Whether to show grid lines                                  | `False`   |
+| `context`           | `bool`           | Whether to display context items                            | `True`    |
+| `filling`           | `bool`           | Whether to fill the area below the trend                    | `False`   |
+| `collapsed_filters` | `bool`           | Whether to collapse rather than mark filtered-out intervals | `False`   |
+
 # `client.trend.group`
 
 ## trendminer_interface.\_client.trend.group.TrendHubEntryGroupFacade
@@ -7702,6 +8197,14 @@ group: TrendHubEntryGroupFacade
 
 Facade for instantiating new TrendHub entry groups
 
+### chart
+
+```
+chart: ChartPropertiesFacade
+```
+
+Facade for creating new charting property instances
+
 # `client.trend.view`
 
 ## trendminer_interface.\_client.trend.view.TrendHubViewFacade
@@ -7717,6 +8220,7 @@ define(
     entries: Sequence[Tag | Attribute | TrendHubEntryGroup],
     layers: Sequence[TrendHubLayer],
     context_interval: Interval,
+    chart_properties: ChartProperties | None = None,
     live: bool = False,
     filter_entries: Sequence[tuple[Filter, bool]]
     | None = None,
@@ -7727,7 +8231,7 @@ define(
 ) -> TrendHubViewDefinition
 ```
 
-Define a new trend hub view
+Define a new TrendHub view
 
 Parameters:
 
@@ -7736,6 +8240,7 @@ Parameters:
 | `entries`             | \`list\[Tag                                | Attribute                                                                                                                                                 | TrendHubEntryGroup\]\` |
 | `layers`              | `list[TrendHubLayer]`                      | List of layers to show in the view. Layers are expected to have intervals of the same length. A single layer must have been configured as the base layer. | *required*             |
 | `context_interval`    | `Interval`                                 | Context interval for the view.                                                                                                                            | *required*             |
+| `chart_properties`    | `ChartProperties`                          | View chart configuration. Defaults to standard stacked plot representation.                                                                               | `None`                 |
 | `live`                | `bool`                                     | Whether the view base layer should always update to end at the current time.                                                                              | `False`                |
 | `filter_entries`      | `list[tuple[Filter, bool]]`                | List of filters included in the view, with their active state                                                                                             | `None`                 |
 | `fingerprint_entries` | `list[tuple[Fingerprint, bool, Interval]]` | List of fingerprints included in the view, with their active state and interval to which they apply                                                       | `None`                 |
@@ -7751,6 +8256,10 @@ Raises:
 | Type         | Description                                            |
 | ------------ | ------------------------------------------------------ |
 | `ValueError` | If the input layers do not all have the same duration. |
+
+Notes
+
+Statistics and layer comparison table formats are currently not configurable
 
 ### create
 
@@ -8683,7 +9192,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -8691,15 +9200,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -8902,7 +9412,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -8910,15 +9420,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -9917,6 +10428,14 @@ Version number of the object, incremented on each modification
 definition: ContextHubViewDefinition
 ```
 
+### url
+
+```
+url: str
+```
+
+Direct link to the saved view
+
 ### update
 
 ```
@@ -9977,7 +10496,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -9985,15 +10504,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -10426,16 +10946,16 @@ Configuration of a context type
 
 Attributes:
 
-| Name                  | Type                          | Description                                                                                                                                                                                                                                                                                                            |
-| --------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                | `str`                         | Name that is visible to the users in the appliance                                                                                                                                                                                                                                                                     |
-| `description`         | `(str, optional)`             | Description of the context type                                                                                                                                                                                                                                                                                        |
-| `workflow`            | `(ContextWorkflow, optional)` | Workflow associated with the context type. When None, the context type can only have a single associated timestamp.                                                                                                                                                                                                    |
-| `fields`              | `list of ContextField`        | List of fields that are associated with the context type.                                                                                                                                                                                                                                                              |
-| `color`               | `str`                         | Color of the context type in hex format (e.g. "#FF0000")                                                                                                                                                                                                                                                               |
-| `icon`                | `ContextTypeIcon`             | Icon of the context type. Possible values are: "alert-circle", "arrows-round", "bucket", "circle-success", "clipboard", "cracked", "file-check", "flame", "flask", "flow-line", "information", "person", "ruler", "snowflake", "spoon", "trending-down", "warning", "waterdrops", "waves", "wheelbarrow", or "wrench". |
-| `approvals_enabled`   | `bool`                        | Whether context items of this type can be approved.                                                                                                                                                                                                                                                                    |
-| `audit_trail_enabled` | `bool`                        | Whether context item edit history will be saved as metadata to the item.                                                                                                                                                                                                                                               |
+| Name                  | Type                          | Description                                                                                                         |
+| --------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `name`                | `str`                         | Name that is visible to the users in the appliance                                                                  |
+| `description`         | `(str, optional)`             | Description of the context type                                                                                     |
+| `workflow`            | `(ContextWorkflow, optional)` | Workflow associated with the context type. When None, the context type can only have a single associated timestamp. |
+| `fields`              | `list of ContextField`        | List of fields that are associated with the context type.                                                           |
+| `color`               | `str`                         | Color of the context type in hex format (e.g. "#FF0000")                                                            |
+| `icon`                | `ContextTypeIcon`             | Icon of the context type. See ContextTypeIcon for the allowed values.                                               |
+| `approvals_enabled`   | `bool`                        | Whether context items of this type can be approved.                                                                 |
+| `audit_trail_enabled` | `bool`                        | Whether context item edit history will be saved as metadata to the item.                                            |
 
 ### name
 
@@ -10856,7 +11376,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -10864,15 +11384,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -11015,6 +11536,14 @@ Version number of the object, incremented on each modification
 definition: DashboardDefinition
 ```
 
+### url
+
+```
+url: str
+```
+
+Direct link to the saved dashboard
+
 ### update
 
 ```
@@ -11075,7 +11604,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -11083,15 +11612,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -11445,7 +11975,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -11453,15 +11983,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -11983,7 +12514,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -11991,15 +12522,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -12208,7 +12740,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -12216,15 +12748,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -12433,7 +12966,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -12441,15 +12974,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -12716,7 +13250,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -12724,15 +13258,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -12943,7 +13478,7 @@ The tag for which these index details apply.
 ### status
 
 ```
-status: IndexStatus
+status: TagIndexStatus
 ```
 
 The current status of the index.
@@ -13208,7 +13743,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -13216,15 +13751,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -13668,7 +14204,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -13676,15 +14212,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -13946,7 +14483,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -13954,15 +14491,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -14165,7 +14703,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -14173,15 +14711,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -14384,7 +14923,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -14392,15 +14931,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -14849,6 +15389,16 @@ name: str = name
 hidden_references: list[Tag | Attribute] = hidden_references
 ```
 
+### stored_interval
+
+```
+stored_interval: Interval
+```
+
+The interval as configured when the view was saved.
+
+This is NOT the interval currently represented by the layer for live views. The stored interval does not update.
+
 ### base
 
 ```
@@ -14983,6 +15533,14 @@ Version number of the object, incremented on each modification
 definition: TrendHubViewDefinition
 ```
 
+### url
+
+```
+url: str
+```
+
+Direct link to the saved view
+
 ### update
 
 ```
@@ -15043,7 +15601,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -15051,15 +15609,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -15097,6 +15656,31 @@ Returns:
 | Name   | Type            | Description                                                                                                                    |
 | ------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `self` | `SavedItemBase` | The object itself, after removing sharing with the user or user group. Practically, only the shared property may have changed. |
+
+### get_data
+
+```
+get_data(freq: Timedelta) -> list[DataFrame]
+```
+
+Retrieve interpolated timeseries data for underlying tags
+
+Parameters:
+
+| Name   | Type        | Description      | Default    |
+| ------ | ----------- | ---------------- | ---------- |
+| `freq` | `Timedelta` | Data resolution. | *required* |
+
+Returns:
+
+| Type              | Description                                                             |
+| ----------------- | ----------------------------------------------------------------------- |
+| `list[DataFrame]` | A dataframe with DatetimeIndex and tag names as columns for every layer |
+
+Notes
+
+- Any tag time shift will be taken into account: the returned data will be for the shifted tag.
+- A call to get TrendMiner data does not automatically trigger indexing of the tag. It is up to the user to ensure the tag is indexed for the required period prior to requesting the data (cfr. Tag.index).
 
 ## trendminer_interface.objects.TrendHubViewTile
 
@@ -15450,7 +16034,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -15458,15 +16042,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -16011,12 +16596,14 @@ Attributes:
 | `entries`             | `list[TrendHubEntry]`                      | List of entries (tags, attributes, groups) included in the view                                     |
 | `layers`              | `list[TrendHubLayer]`                      | List of layers included in the view                                                                 |
 | `context_interval`    | `Interval`                                 | Context interval of the view                                                                        |
+| `chart_properties`    | `ChartProperties`                          | Chart configuration                                                                                 |
 | `filter_entries`      | `list[tuple[Filter, bool]]`                | List of filters included in the view, with their active state                                       |
 | `fingerprint_entries` | `list[tuple[Fingerprint, bool, Interval]]` | List of fingerprints included in the view, with their active state and interval to which they apply |
 
 Notes
 
-fingerprint_entries and filter_entries may reference saved items which no longer exist. Attempting to access the attributes of these items will result in a ResourceNotFound error.
+- fingerprint_entries and filter_entries may reference saved items which no longer exist. Attempting to access the attributes of these items will result in a ResourceNotFound error.
+- Statistics and layer comparison table formats are currently not configurable
 
 ### entries
 
@@ -16034,6 +16621,12 @@ layers: list[TrendHubLayer] = layers
 
 ```
 context_interval: Interval = context_interval
+```
+
+### chart_properties
+
+```
+chart_properties: ChartProperties = chart_properties
 ```
 
 ### filter_entries
@@ -16056,6 +16649,24 @@ fingerprint_entries: list[
 live = live
 ```
 
+### base_layer
+
+```
+base_layer: TrendHubLayer
+```
+
+The view's base layer
+
+### intervals
+
+```
+intervals: IntervalIndex
+```
+
+Get the Intervals currently represented by the view layers
+
+This accounts for view live mode and chart lock settings
+
 ### generate_url
 
 ```
@@ -16069,6 +16680,31 @@ Returns:
 | Type  | Description                  |
 | ----- | ---------------------------- |
 | `str` | Link to the view in TrendHub |
+
+### get_data
+
+```
+get_data(freq: Timedelta) -> list[DataFrame]
+```
+
+Retrieve interpolated timeseries data for underlying tags
+
+Parameters:
+
+| Name   | Type        | Description      | Default    |
+| ------ | ----------- | ---------------- | ---------- |
+| `freq` | `Timedelta` | Data resolution. | *required* |
+
+Returns:
+
+| Type              | Description                                                             |
+| ----------------- | ----------------------------------------------------------------------- |
+| `list[DataFrame]` | A dataframe with DatetimeIndex and tag names as columns for every layer |
+
+Notes
+
+- Any tag time shift will be taken into account: the returned data will be for the shifted tag.
+- A call to get TrendMiner data does not automatically trigger indexing of the tag. It is up to the user to ensure the tag is indexed for the required period prior to requesting the data (cfr. Tag.index).
 
 ## trendminer_interface.objects.search.value_based_search.ValueBasedSearchDefinition
 
@@ -16433,26 +17069,422 @@ Yields:
 | --------- | ---- | --------------------------------------------------------------------------- |
 | `content` | `T`  | Each individual item from the content of all streamed pages, one at a time. |
 
-# `SavedItem`
+## trendminer_interface.types.AssetAccessPermission
 
-Type alias for any one of the following types:
+```
+AssetAccessPermission = Literal['read', 'browse', 'none']
+```
 
-- [`Folder`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Folder/index.md)
-- [`Aggregation`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Aggregation/index.md)
-- [`Formula`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Formula/index.md)
-- [`CustomCalculation`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/CustomCalculation/index.md)
-- [`Prediction`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Prediction/index.md)
-- [`ValueBasedSearch`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ValueBasedSearch/index.md)
-- [`SimilaritySearch`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/SimilaritySearch/index.md)
-- [`AreaSearch`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/AreaSearch/index.md)
-- [`DigitalStepSearch`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/DigitalStepSearch/index.md)
-- [`Fingerprint`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Fingerprint/index.md)
-- [`TrendHubView`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/TrendHubView/index.md)
-- [`ContextHubView`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/ContextHubView/index.md)
-- [`Dashboard`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Dashboard/index.md)
-- [`Notebook`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Notebook/index.md)
-- [`Pipeline`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Pipeline/index.md)
-- [`Filter`](https://trendminercs.github.io/trendminer-interface/reference/types/objects/Filter/index.md)
+## trendminer_interface.types.AssetFrameworkType
+
+```
+AssetFrameworkType = Literal['csv', 'datasource']
+```
+
+## trendminer_interface.types.ChartLabelType
+
+```
+ChartLabelType = Literal['alias', 'name', 'description']
+```
+
+## trendminer_interface.types.ClosedMode
+
+```
+ClosedMode = Literal['open', 'closed']
+```
+
+## trendminer_interface.types.ComponentInclusion
+
+```
+ComponentInclusion = Literal[
+    "self", "ancestors", "descendants"
+]
+```
+
+## trendminer_interface.types.ContextFieldType
+
+```
+ContextFieldType = Literal[
+    "enumeration", "string", "numeric"
+]
+```
+
+## trendminer_interface.objects.context.filter.ContextFilter
+
+```
+ContextFilter = Union[
+    ContextApprovalFilter,
+    ContextComponentFilter,
+    ContextTypeFilter,
+    ContextCreatedByFilter,
+    ContextCreationDateFilter,
+    ContextDescriptionFilter,
+    ContextDurationFilter,
+    ContextEnumerationFieldFilter,
+    ContextIntervalFilter,
+    ContextKeywordFilter,
+    ContextNumericFieldFilter,
+    ContextPeriodFilter,
+    ContextStateFilter,
+    ContextStringFieldFilter,
+    ContextPropertyFilter,
+]
+```
+
+## trendminer_interface.types.ContextHubViewTileMode
+
+```
+ContextHubViewTileMode = Literal[
+    "table", "gantt", "scatter", "count"
+]
+```
+
+## trendminer_interface.types.ContextHubViewType
+
+```
+ContextHubViewType = Literal['grid', 'gantt', 'scatter']
+```
+
+## trendminer_interface.types.ContextIntervalScope
+
+```
+ContextIntervalScope = Literal['event', 'creation date']
+```
+
+## trendminer_interface.types.ContextTypeIcon
+
+```
+ContextTypeIcon = Literal[
+    "alert-circle",
+    "arrows-round",
+    "bucket",
+    "circle-success",
+    "clipboard",
+    "cracked",
+    "file-check",
+    "flame",
+    "flask",
+    "flow-line",
+    "information",
+    "person",
+    "ruler",
+    "snowflake",
+    "spoon",
+    "trending-down",
+    "warning",
+    "waterdrops",
+    "waves",
+    "wheelbarrow",
+    "wrench",
+]
+```
+
+## trendminer_interface.types.CreatedDateOperator
+
+```
+CreatedDateOperator = Literal['>', '>=', '<', '<=']
+```
+
+## trendminer_interface.types.CurrentValueTileCondition
+
+```
+CurrentValueTileCondition = (
+    CurrentValueTileNumericCondition
+    | CurrentValueTileRangeCondition
+    | CurrentValueTileTextCondition
+)
+```
+
+## trendminer_interface.types.CurrentValueTileEntry
+
+```
+CurrentValueTileEntry = tuple[
+    Tag | Attribute,
+    str,
+    str,
+    list[CurrentValueTileCondition],
+]
+```
+
+## trendminer_interface.types.CurrentValueTileNumericOperator
+
+```
+CurrentValueTileNumericOperator = Literal[
+    ">", ">=", "<", "<=", "=", "!="
+]
+```
+
+## trendminer_interface.types.CurrentValueTileNumericRangeOperator
+
+```
+CurrentValueTileNumericRangeOperator = Literal[
+    "between", "not between"
+]
+```
+
+## trendminer_interface.types.CurrentValueTileTextOperator
+
+```
+CurrentValueTileTextOperator = Literal[
+    "=", "!=", "contains", "does not contain"
+]
+```
+
+## trendminer_interface.objects.dashboard.tile.DashboardTile
+
+```
+DashboardTile = (
+    ContextHubViewTile
+    | CurrentValueTile
+    | DraftContextHubViewTile
+    | DraftCurrentValueTile
+    | DraftGaugeTile
+    | DraftMonitorTile
+    | DraftTrendHubViewTile
+    | ExternalContentTile
+    | GaugeTile
+    | MonitorTile
+    | NotebookTile
+    | TextTile
+    | TrendHubViewTile
+)
+```
+
+## trendminer_interface.types.DurationOperator
+
+```
+DurationOperator = Literal['>', '>=', '<', '<=', '=', '!=']
+```
+
+## trendminer_interface.types.EmptyMode
+
+```
+EmptyMode = Literal['empty', 'not empty']
+```
+
+## trendminer_interface.types.GaugeTileMode
+
+```
+GaugeTileMode = Literal[
+    "angular", "vertical", "horizontal", "speedometer"
+]
+```
+
+## trendminer_interface.types.GaugeTileRange
+
+```
+GaugeTileRange = tuple[float, float, str, str]
+```
+
+## trendminer_interface.types.ImportTagType
+
+```
+ImportTagType = Literal['analog', 'discrete', 'string']
+```
+
+## trendminer_interface.types.IntervalAggregationMethod
+
+```
+IntervalAggregationMethod = (
+    TagAggregationMethod | Literal["std", "start", "end"]
+)
+```
+
+## trendminer_interface.types.IntervalClosedType
+
+```
+IntervalClosedType = Literal[
+    "left", "right", "both", "neither"
+]
+```
+
+## trendminer_interface.types.IntervalRoundType
+
+```
+IntervalRoundType = Literal['shrink', 'grow', 'nearest']
+```
+
+## trendminer_interface.types.LineStyle
+
+```
+LineStyle = NonBaseLineStyle | Literal['solid']
+```
+
+## trendminer_interface.types.MonitorState
+
+```
+MonitorState = Literal[
+    "enabled", "disabled", "system disabled"
+]
+```
+
+## trendminer_interface.types.MonitorTileCondition
+
+```
+MonitorTileCondition = tuple[ContextTypeIcon, str, str]
+```
+
+## trendminer_interface.types.NonBaseLineStyle
+
+```
+NonBaseLineStyle = Literal[
+    "dash",
+    "dot",
+    "dash-dot",
+    "dash-dot-dot",
+    "loose-dash-dot",
+]
+```
+
+## trendminer_interface.types.NumericFieldOperator
+
+```
+NumericFieldOperator = Literal[
+    ">", ">=", "<", "<=", "=", "!="
+]
+```
+
+## trendminer_interface.types.NumericTagType
+
+```
+NumericTagType = Literal['analog', 'discrete']
+```
+
+## trendminer_interface.objects.SavedItem
+
+```
+SavedItem = (
+    Folder
+    | Aggregation
+    | Formula
+    | CustomCalculation
+    | Prediction
+    | ValueBasedSearch
+    | SimilaritySearch
+    | AreaSearch
+    | DigitalStepSearch
+    | Fingerprint
+    | TrendHubView
+    | ContextHubView
+    | Dashboard
+    | Notebook
+    | Pipeline
+    | Filter
+)
+```
+
+## trendminer_interface.objects.search.Search
+
+```
+Search = (
+    AreaSearch
+    | DigitalStepSearch
+    | SimilaritySearch
+    | ValueBasedSearch
+)
+```
+
+## trendminer_interface.types.SearchCalculation
+
+```
+SearchCalculation = tuple[
+    Tag, IntervalAggregationMethod, str
+]
+```
+
+## trendminer_interface.types.TagAggregationMethod
+
+```
+TagAggregationMethod = Literal[
+    "mean",
+    "min",
+    "max",
+    "range",
+    "delta",
+    "integral per day",
+    "integral per hour",
+    "integral per minute",
+    "integral per second",
+]
+```
+
+## trendminer_interface.types.TagAggregationPosition
+
+```
+TagAggregationPosition = Literal['start', 'center', 'end']
+```
+
+## trendminer_interface.types.TagIndexStatus
+
+```
+TagIndexStatus = Literal[
+    "ok",
+    "in progress",
+    "out of date",
+    "stale",
+    "incomplete",
+    "dormant",
+]
+```
+
+## trendminer_interface.types.TagType
+
+```
+TagType = NumericTagType | Literal['digital', 'string']
+```
+
+## trendminer_interface.objects.trend.trendhub_view.TrendHubEntry
+
+```
+TrendHubEntry = Tag | Attribute | TrendHubEntryGroup
+```
+
+## trendminer_interface.types.TrendHubViewTileMode
+
+```
+TrendHubViewTileMode = Literal['plot', 'statistics table']
+```
+
+## trendminer_interface.types.ValueBasedSearchMode
+
+```
+ValueBasedSearchMode = Literal['and', 'or']
+```
+
+## trendminer_interface.types.ValueBasedSearchOperator
+
+```
+ValueBasedSearchOperator = Literal[
+    "=", "!=", ">", "<", ">=", "<=", "in", "constant"
+]
+```
+
+## trendminer_interface.types.ValueBasedSearchQuery
+
+```
+ValueBasedSearchQuery = (
+    tuple[
+        Tag, Literal["=", "!=", ">", "<", ">=", "<="], float
+    ]
+    | tuple[Tag, Literal["="], str]
+    | tuple[Tag, Literal["in"], list[str]]
+    | tuple[Tag, Literal["constant"]]
+)
+```
+
+## trendminer_interface.types.WorkScope
+
+```
+WorkScope = Literal[
+    "my work", "shared", "favorites", "system"
+]
+```
+
+## trendminer_interface.types.WorkSharePermission
+
+```
+WorkSharePermission = Literal['read', 'write', 'manage']
+```
 # API — exceptions
 
 ## trendminer_interface.exceptions.APIError

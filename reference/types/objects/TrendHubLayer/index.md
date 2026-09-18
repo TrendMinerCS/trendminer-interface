@@ -23,6 +23,16 @@ name: str = name
 hidden_references: list[Tag | Attribute] = hidden_references
 ```
 
+### stored_interval
+
+```
+stored_interval: Interval
+```
+
+The interval as configured when the view was saved.
+
+This is NOT the interval currently represented by the layer for live views. The stored interval does not update.
+
 ### base
 
 ```

@@ -27,3 +27,11 @@ group: TrendHubEntryGroupFacade
 ```
 
 Facade for instantiating new TrendHub entry groups
+
+### chart
+
+```
+chart: ChartPropertiesFacade
+```
+
+Facade for creating new charting property instances

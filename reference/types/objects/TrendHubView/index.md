@@ -108,6 +108,14 @@ Version number of the object, incremented on each modification
 definition: TrendHubViewDefinition
 ```
 
+### url
+
+```
+url: str
+```
+
+Direct link to the saved view
+
 ### update
 
 ```
@@ -168,7 +176,7 @@ Returns:
 
 ```
 get_permissions() -> list[
-    tuple[User | UserGroup, SharePermission]
+    tuple[User | UserGroup, WorkSharePermission]
 ]
 ```
 
@@ -176,15 +184,16 @@ Get the sharing settings of the object
 
 Returns:
 
-| Name      | Type                | Description                      |
-| --------- | ------------------- | -------------------------------- |
-| `sharing` | \`list\[tuple\[User | UserGroup, SharePermission\]\]\` |
+| Name      | Type                | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| `sharing` | \`list\[tuple\[User | UserGroup, WorkSharePermission\]\]\` |
 
 ### add_permission
 
 ```
 add_permission(
-    subject: User | UserGroup, permission: SharePermission
+    subject: User | UserGroup,
+    permission: WorkSharePermission,
 ) -> Self
 ```
 
@@ -222,3 +231,28 @@ Returns:
 | Name   | Type            | Description                                                                                                                    |
 | ------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `self` | `SavedItemBase` | The object itself, after removing sharing with the user or user group. Practically, only the shared property may have changed. |
+
+### get_data
+
+```
+get_data(freq: Timedelta) -> list[DataFrame]
+```
+
+Retrieve interpolated timeseries data for underlying tags
+
+Parameters:
+
+| Name   | Type        | Description      | Default    |
+| ------ | ----------- | ---------------- | ---------- |
+| `freq` | `Timedelta` | Data resolution. | *required* |
+
+Returns:
+
+| Type              | Description                                                             |
+| ----------------- | ----------------------------------------------------------------------- |
+| `list[DataFrame]` | A dataframe with DatetimeIndex and tag names as columns for every layer |
+
+Notes
+
+- Any tag time shift will be taken into account: the returned data will be for the shifted tag.
+- A call to get TrendMiner data does not automatically trigger indexing of the tag. It is up to the user to ensure the tag is indexed for the required period prior to requesting the data (cfr. Tag.index).

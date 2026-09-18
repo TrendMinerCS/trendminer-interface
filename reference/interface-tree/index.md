@@ -206,8 +206,15 @@ TrendMinerClient
 │   │   └── search → PagedList[TrendHubView]
 │   ├── layer
 │   │   └── new → TrendHubLayer
-│   └── group
-│       └── new → TrendHubEntryGroup
+│   ├── group
+│   │   └── new → TrendHubEntryGroup
+│   └── chart
+│       ├── stacked
+│       │   └── new → StackedChartProperties
+│       ├── trend
+│       │   └── new → TrendChartProperties
+│       └── scatter
+│           └── new → ScatterChartProperties
 ├── user
 │   ├── self → User
 │   ├── from_identifier → User

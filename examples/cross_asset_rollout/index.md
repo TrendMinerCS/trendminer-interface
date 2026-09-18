@@ -212,7 +212,7 @@ aggregation_tag.index()
 
 We will create the TrendHub views that we will later add to the dashboards. We fix attribute and tag colors and scales for a uniform look.
 
-In \[7\]:
+In \[8\]:
 
 Copied!
 
@@ -248,23 +248,32 @@ for asset in assets:
     # Temperature
     temperature = asset.get_child_attribute("Temperature")
 
-    # Single layer from start of September until current time
-    # We will set the same interval for the context bar
-    interval = pd.Interval(
-        pd.Timestamp("2026-09-01", tz=client.tz),
-        pd.Timestamp.now(tz=client.tz),
+    # Focus chart interval
+    # Since we will make a locked and live view, only the duration matters
+    now = pd.Timestamp.now(tz=client.tz)
+    chart_interval = pd.Interval(
+        now-pd.Timedelta(days=7),
+        now,
     )
     layer = client.trend.layer.new(
-        interval=interval,
+        interval=chart_interval,
         base=True,  # base layer
     )
 
+    # Context interval (last 30d)
+    context_interval = pd.Interval(
+        now-pd.Timedelta(days=30),
+        now,
+    )
+
     # View definition
+    chart_properties = client.trend.chart.stacked.new(locked=True)
     thv_def = client.trend.view.define(
         entries=[phase, flow_group, temperature],
         layers=[layer],
-        context_interval=interval,
+        context_interval=context_interval,
         live=True,
+        chart_properties=chart_properties,
     )
 
     # Create/update
@@ -301,15 +310,19 @@ smoothed_flow_tag = aggregation_tag_dict[asset] smoothed_flow_tag.color = "#050d
 
 temperature = asset.get_child_attribute("Temperature")
 
-# Single layer from start of September until current time
+# Focus chart interval
 
-# We will set the same interval for the context bar
+# Since we will make a locked and live view, only the duration matters
 
-interval = pd.Interval( pd.Timestamp("2026-09-01", tz=client.tz), pd.Timestamp.now(tz=client.tz), ) layer = client.trend.layer.new( interval=interval, base=True, # base layer )
+now = pd.Timestamp.now(tz=client.tz) chart_interval = pd.Interval( now-pd.Timedelta(days=7), now, ) layer = client.trend.layer.new( interval=chart_interval, base=True, # base layer )
+
+# Context interval (last 30d)
+
+context_interval = pd.Interval( now-pd.Timedelta(days=30), now, )
 
 # View definition
 
-thv_def = client.trend.view.define( entries=[phase, flow_group, temperature], layers=[layer], context_interval=interval, live=True, )
+chart_properties = client.trend.chart.stacked.new(locked=True) thv_def = client.trend.view.define( entries=[phase, flow_group, temperature], layers=[layer], context_interval=context_interval, live=True, chart_properties=chart_properties, )
 
 # Create/update
 
@@ -321,7 +334,7 @@ We create a value-based search per asset, indicating whether the asset is active
 
 We will set up the monitor to create context items, of which we need to configure the context type.
 
-In \[8\]:
+In \[9\]:
 
 Copied!
 
@@ -332,7 +345,7 @@ context_type
 
 context_type = client.context.type.from_name("Operational") context_type
 
-In \[9\]:
+In \[10\]:
 
 Copied!
 
@@ -418,7 +431,7 @@ monitor.update() monitor.enable()
 
 We can now create ContextHub views which capture the context items created from the monitors we just set up. The views created below get all context items of the specified type of the last 30d, attached to the specific CIP asset. Furthermore we filter to only retreive items we created ourselves. This is best practice to avoid other user's context items interfering with our views.
 
-In \[10\]:
+In \[11\]:
 
 Copied!
 
@@ -475,16 +488,6 @@ Copied!
 
 ```
 from trendminer_interface import Dashboard
-from urllib.parse import urljoin
-
-
-def db_url(db: Dashboard):
-    """Helper function to get dashboard url"""
-    return urljoin(
-        client.url,
-        f"dashhub/#/dashboard/{db.identifier}",
-)
-
 
 overview_db_name = "CIP Overview"
 
@@ -519,7 +522,7 @@ for i, asset in enumerate(assets):
     # Text tile - link back to overview
     overview_tile = client.dashboard.text.new(
         position=(0, 0, 4, 4),
-        content=f'<h2><a href="{db_url(overview_db)}">To Overview</a></h2>'
+        content=f'<h2><a href="{overview_db.url}">To Overview</a></h2>'
     )
     tiles.append(overview_tile)
 
@@ -606,7 +609,7 @@ for i, asset in enumerate(assets):
     # Overview text tile - link to unit dashboard
     unit_tile = client.dashboard.text.new(
         position=(0, overview_y_pos, 4, 4),
-        content=f'<h2><a href="{db_url(db)}">{asset.name}</a></h2>'
+        content=f'<h2><a href="{db.url}">{asset.name}</a></h2>'
     )
     overview_db.definition.tiles.append(unit_tile)
 
@@ -625,7 +628,7 @@ for i, asset in enumerate(assets):
 overview_db.update()
 ```
 
-from trendminer_interface import Dashboard from urllib.parse import urljoin def db_url(db: Dashboard): """Helper function to get dashboard url""" return urljoin( client.url, f"dashhub/#/dashboard/{db.identifier}", ) overview_db_name = "CIP Overview" overview_db_def = client.dashboard.define( tiles=[], live=True, ) try: overview_db = project_folder.get_item( name=overview_db_name, content_type=Dashboard, ) if update_existing: overview_db.definition = overview_db_def overview_db = overview_db.update() except ResourceNotFound: overview_db = client.dashboard.create( name=overview_db_name, folder=project_folder, definition=overview_db_def, ) for i, asset in enumerate(assets): asset_folder = folder_dict[asset]
+from trendminer_interface import Dashboard overview_db_name = "CIP Overview" overview_db_def = client.dashboard.define( tiles=[], live=True, ) try: overview_db = project_folder.get_item( name=overview_db_name, content_type=Dashboard, ) if update_existing: overview_db.definition = overview_db_def overview_db = overview_db.update() except ResourceNotFound: overview_db = client.dashboard.create( name=overview_db_name, folder=project_folder, definition=overview_db_def, ) for i, asset in enumerate(assets): asset_folder = folder_dict[asset]
 
 # UNIT DASHBOARD
 
@@ -635,7 +638,7 @@ tiles = []
 
 overview_tile = client.dashboard.text.new( position=(0, 0, 4, 4), content=f'
 
-## [To Overview](<https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Bdb_url(overview_db)%7D>)
+## [To Overview](https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Boverview_db.url%7D)
 
 ' ) tiles.append(overview_tile)
 
@@ -669,7 +672,7 @@ overview_y_pos = 4\*i
 
 unit_tile = client.dashboard.text.new( position=(0, overview_y_pos, 4, 4), content=f'
 
-## [{asset.name}](<https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Bdb_url(db)%7D>)
+## [{asset.name}](https://trendminercs.github.io/trendminer-interface/examples/cross_asset_rollout/%7Bdb.url%7D)
 
 ' ) overview_db.definition.tiles.append(unit_tile)
 

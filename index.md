@@ -2,6 +2,14 @@
 
 Python control package for the TrendMiner API.
 
+## Installation
+
+Install the latest release ([`v1.6.0a1`](https://github.com/TrendMinerCS/trendminer-interface/releases/tag/v1.6.0a1)) directly from its wheel:
+
+```
+pip install https://github.com/TrendMinerCS/trendminer-interface/releases/download/v1.6.0a1/trendminer_interface-1.6.0.a1-py3-none-any.whl
+```
+
 New here? Start with **[Getting started](https://trendminercs.github.io/trendminer-interface/getting-started/index.md)**.
 
 ## Reference

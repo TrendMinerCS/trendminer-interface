@@ -13,6 +13,7 @@ define(
     entries: Sequence[Tag | Attribute | TrendHubEntryGroup],
     layers: Sequence[TrendHubLayer],
     context_interval: Interval,
+    chart_properties: ChartProperties | None = None,
     live: bool = False,
     filter_entries: Sequence[tuple[Filter, bool]]
     | None = None,
@@ -23,7 +24,7 @@ define(
 ) -> TrendHubViewDefinition
 ```
 
-Define a new trend hub view
+Define a new TrendHub view
 
 Parameters:
 
@@ -32,6 +33,7 @@ Parameters:
 | `entries`             | \`list\[Tag                                | Attribute                                                                                                                                                 | TrendHubEntryGroup\]\` |
 | `layers`              | `list[TrendHubLayer]`                      | List of layers to show in the view. Layers are expected to have intervals of the same length. A single layer must have been configured as the base layer. | *required*             |
 | `context_interval`    | `Interval`                                 | Context interval for the view.                                                                                                                            | *required*             |
+| `chart_properties`    | `ChartProperties`                          | View chart configuration. Defaults to standard stacked plot representation.                                                                               | `None`                 |
 | `live`                | `bool`                                     | Whether the view base layer should always update to end at the current time.                                                                              | `False`                |
 | `filter_entries`      | `list[tuple[Filter, bool]]`                | List of filters included in the view, with their active state                                                                                             | `None`                 |
 | `fingerprint_entries` | `list[tuple[Fingerprint, bool, Interval]]` | List of fingerprints included in the view, with their active state and interval to which they apply                                                       | `None`                 |
@@ -47,6 +49,10 @@ Raises:
 | Type         | Description                                            |
 | ------------ | ------------------------------------------------------ |
 | `ValueError` | If the input layers do not all have the same duration. |
+
+Notes
+
+Statistics and layer comparison table formats are currently not configurable
 
 ### create
 
