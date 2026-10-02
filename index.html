@@ -8255,9 +8255,9 @@
 <h1 id="trendminer-interface">TrendMiner Interface</h1>
 <p>Python control package for the TrendMiner API.</p>
 <h2 id="installation">Installation</h2>
-<p>Install the latest release (<a href="https://github.com/TrendMinerCS/trendminer-interface/releases/tag/v1.6.0a1"><code>v1.6.0a1</code></a>)
+<p>Install the latest release (<a href="https://github.com/TrendMinerCS/trendminer-interface/releases/tag/v1.6.0a2"><code>v1.6.0a2</code></a>)
 directly from its wheel:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>https://github.com/TrendMinerCS/trendminer-interface/releases/download/v1.6.0a1/trendminer_interface-1.6.0.a1-py3-none-any.whl
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>https://github.com/TrendMinerCS/trendminer-interface/releases/download/v1.6.0a2/trendminer_interface-1.6.0.a2-py3-none-any.whl
 </code></pre></div>
 <p>New here? Start with <strong><a href="getting-started/">Getting started</a></strong>.</p>
 <h2 id="reference">Reference</h2>
@@ -8270,20 +8270,19 @@ directly from its wheel:</p>
   exceptions), each showing its public attributes, properties and methods.</li>
 </ul>
 <h2 id="for-llms">For LLMs</h2>
-<p>Using an AI assistant with this SDK? Point it directly at this project's
-<strong><code>llms.txt</code></strong> — a machine-readable index of the whole documentation, following
-the <a href="https://llmstxt.org/">llms.txt</a> convention. Copy this URL into your
-assistant:</p>
+<p>Using an AI assistant with this SDK? The most robust way to get started with
+most LLMs is to download <strong><code>llms-full.txt</code></strong> — the full guides and API reference
+in a single file — and upload it to your assistant as a file attachment:</p>
+<p><a href="llms-full.txt" download class="md-button md-button--primary">Download llms-full.txt</a></p>
+<p>Uploading works with any chat assistant, including those that cannot browse the
+web or that only read part of a long page. The file is large, so a
+large-context model gives the best results. Download it again after upgrading to
+a new release.</p>
+<p>If your tool can fetch URLs itself (e.g. coding agents), you can instead point
+it at <strong><code>llms.txt</code></strong>: a concise, linked index of the documentation that follows
+the <a href="https://llmstxt.org/">llms.txt</a> convention:</p>
 <div class="highlight"><pre><span></span><code>https://trendminercs.github.io/trendminer-interface/llms.txt
 </code></pre></div>
-<ul>
-<li><a href="https://trendminercs.github.io/trendminer-interface/llms.txt"><code>llms.txt</code></a> —
-  concise, linked index; the recommended entry point (works with any context
-  window).</li>
-<li><a href="https://trendminercs.github.io/trendminer-interface/llms-full.txt"><code>llms-full.txt</code></a>
-  — the full guides and API reference in a single file (large; best for
-  large-context tools).</li>
-</ul>
 
 
 
